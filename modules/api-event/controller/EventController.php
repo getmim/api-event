@@ -27,7 +27,7 @@ class EventController extends \Api\Controller
             $dend   = $month . '-' . date('t', strtotime($dstart)) . ' 23:59:59';
             $cond['time_start'] = ['__between', $dstart, $dend];
         }
-
+        
         $events = Event::get($cond, $rpp, $page, ['id' => 'DESC']);
         $events = !$events ? [] : Formatter::formatMany('event', $events, ['user']);
 
@@ -57,7 +57,10 @@ class EventController extends \Api\Controller
         if(!$event)
             return $this->resp(404);
 
-        $event = Formatter::format('event', $event, ['user']);
+        $format_opts = ['user'];
+        if(module_exists('event-venue'))
+            $format_opts[] = 'organizer';
+        $event = Formatter::format('event', $event, $format_opts);
         unset($event->meta);
 
         $this->resp(0, $event);
