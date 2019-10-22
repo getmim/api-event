@@ -60,6 +60,9 @@ class EventController extends \Api\Controller
         $format_opts = ['user'];
         if(module_exists('event-venue'))
             $format_opts[] = 'organizer';
+        if(module_exists('event-profile'))
+            $format_opts[] = 'performers';
+        
         $event = Formatter::format('event', $event, $format_opts);
         unset($event->meta);
 
